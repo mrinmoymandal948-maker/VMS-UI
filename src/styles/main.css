@@ -1,0 +1,957 @@
+/* =========================================
+   1. CORE THEME & RESET
+   ========================================= */
+:root {
+  --headerText: #ececed;
+  --headerBg: #9f2b2b;
+  --buttonBg: #9f2b2b;
+  --buttonHoverBg: #7e1f1f;
+  --contentBg: #f1f1f1;
+  --textColor: #212529;
+  --cardBg: #ffffff;
+  --borderColor: #d4d3d3;
+  --inputBg: #f9fafb;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Poppins, "Segoe UI", Arial, sans-serif !important;
+  background-color: var(--contentBg) !important;
+  color: var(--textColor);
+  font-weight: 400;
+  height: 100vh;
+}
+
+/* =========================================
+   2. HEADER STYLES
+   ========================================= */
+.main-header {
+  height: 60px;
+  background-color: #9f2b2b;   /* Company red */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.24);
+  padding: 0 30px;
+  position: relative;
+  z-index: 5;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.header-left,
+.header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.header-nav a {
+  text-decoration: none;
+  color: white;
+  margin-right: 50px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.header-nav a:hover,
+.header-nav a.active {
+  background-color: white;
+  color: #000; /* text becomes black */
+  box-shadow: 7px 7px 7px -1px rgba(68, 68, 68, 0.494);
+}
+
+.header-nav a.active svg {
+  display: none;
+}
+
+.header-middle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.header-right {
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.header-user-text {
+  color: white;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 6px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-logout:hover {
+  background: white;
+  color: #9f2b2b;
+}
+
+/* =========================================
+   ADMIN WHITE HEADER
+   ========================================= */
+
+/* Make user icon blue in admin header */
+
+.admin-top-header .user-icon {
+  color: #0d6efd;
+}
+
+.admin-top-header .dropdown-arrow {
+  color: #0d6efd;
+}
+
+.admin-top-header {
+  height: 60px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+}
+
+.admin-top-left {
+  justify-self: start;
+}
+
+.admin-top-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.admin-top-right {
+  display: flex;
+  align-items: center;
+}
+
+.admin-project-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.admin-welcome {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* =========================================
+   3. BOOKING FORM
+   ========================================= */
+.form-container-main {
+  background: var(--cardBg, #ffffff);
+  max-width: 800px;
+  padding: 40px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.form-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 35px;
+}
+
+.auto-time-display {
+  text-align: right;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.form-item-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.form-item-row label {
+  flex: 0 0 200px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.form-item-row input,
+.form-item-row select {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--inputBg);
+  border: 1px solid var(--borderColor);
+  transition: 0.2s;
+}
+
+.form-item-row input:focus,
+.form-item-row select:focus {
+  outline: none;
+  border-color: #a82424;
+  box-shadow: 0 0 0 2px rgba(168,36,36,0.15);
+}
+
+/* Ticket Type Section */
+.ticket-type-container {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px 20px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-row label {
+  flex: none;
+  width: auto;
+}
+
+/* Form Button */
+.form-actions-center {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn-submit {
+  padding: 12px 20px;
+  background-color: var(--buttonBg);
+  color: white;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: var(--buttonHoverBg);
+}
+
+/* =========================================
+   4. LOGIN & ADMIN CARD
+   ========================================= */
+.login-screen {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--contentBg);
+  overflow: hidden;
+}
+
+.login-screen-centered {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--contentBg);
+}
+
+.admin-login-card-wrapper {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px; /* Card width */
+}
+
+.login-container-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  flex-direction: row-reverse;
+}
+
+.login-right-pane {
+  width: 60%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+}
+
+.branding-text {
+  text-align: center;
+}
+
+.branding-text h1 {
+  font-size: 50px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.login-left-pane {
+  width: 40%;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+}
+
+.login-title {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 50px;
+  text-align: center;
+  letter-spacing: 2px;
+  color: #333;
+}
+
+.login-form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  width: 100%;
+}
+
+.input-field input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #d4d3d3;
+  padding: 14px 9px;
+  padding-left: 35px;
+  color: #212529;
+  background: transparent;
+  font-weight: 400;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.input-field input:focus {
+  outline: none;
+  border-bottom: 1px solid rgb(200, 47, 42);
+  box-shadow: 0 3px 0 rgb(200 47 42 / 20%);
+}
+
+.login-btn-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn-login,
+.btn-reset {
+  width: 100%;
+  padding: 18px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgb(200, 47, 42);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0px 9px 15px -11px rgb(65 78 102);
+  transition: 0.3s;
+}
+
+.btn-login:hover {
+  background: rgb(200, 47, 42);
+}
+
+.btn-admin-panel-card {
+  display: block;
+  background: var(--buttonBg);
+  color: #fff;
+  text-decoration: none;
+  padding: 15px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
+
+.btn-admin-panel-card:hover {
+  background: var(--buttonHoverBg);
+}
+
+/* =========================================
+   5. ADMIN DASHBOARD
+   ========================================= */
+.admin-dashboard-wrapper {
+  padding: 25px;
+  background-color: #f4f6f8;
+  min-height: calc(100vh - 60px);
+}
+
+.admin-dropdown {
+  position: relative;
+}
+
+.admin-dropdown-btn {
+  background: transparent;
+  border: 1px solid var(--headerText);
+  color: var(--headerText);
+  padding: 6px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-dropdown-menu {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  min-width: 200px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.admin-dropdown-menu a,
+.dropdown-logout {
+  padding: 12px 15px;
+  text-decoration: none;
+  color: #212529;
+  font-weight: 500;
+  background: white;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-dropdown-menu a:hover,
+.dropdown-logout:hover {
+  background: #f1f1f1;
+}
+
+.dropdown-logout {
+  border-top: 1px solid #eee;
+  color: #9f2b2b;
+  font-weight: 600;
+}
+
+.dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 100%;
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.admin-side-card {
+  height: fit-content;
+  text-align: left;
+}
+
+.card-subtitle {
+  font-weight: 600;
+  color: #121212;
+  margin-bottom: 20px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.admin-col-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.search-bar {
+  margin-bottom: 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 5px solid #9f2b2b;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  text-align: center;
+  transition: 0.3s;
+}
+
+.dashboard-card h2 {
+  color: #9f2b2b;
+  font-weight: 700;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+}
+
+.table-scroll {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.rsc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rsc-table th {
+  background: #9f2b2b;
+  color: white;
+  padding: 12px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.rsc-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.btn-remove-small {
+  background: #9f2b2b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-remove-small:hover {
+  background: #7e1f1f;
+}
+
+/* Status Messages */
+.status-msg {
+  font-size: 13px;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.status-msg.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-left: 5px solid #2e7d32;
+}
+
+.status-msg.error {
+  background: #fdecea;
+  color: #9f2b2b;
+  border-left: 5px solid #9f2b2b;
+}
+
+.error-text {
+  color: #9f2b2b;
+  font-weight: 600;
+}
+
+.status-popup-error {
+  background: #fdecea;
+  border: 1px solid #9f2b2b;
+  color: #9f2b2b;
+}
+
+.status-popup-success {
+  background: #f3f3f3;
+  border: 1px solid #7e1f1f;
+  color: #212529;
+}
+
+/* Icon Input Styling */
+.icon-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon-input input {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+.input-icon {
+  position: absolute;
+  font-size: 18px;
+  color: #414e66;
+  cursor: pointer;
+}
+
+.left-icon {
+  left: 10px;
+}
+
+.right-icon {
+  right: 10px;
+}
+
+
+/* =========================================
+   SIDE ACTION BUTTON BOX
+   ========================================= */
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* keeps form centered */
+  gap: 10px;
+  padding-top: 5px;
+}
+
+.side-action-box {
+  background: var(--cardBg);
+  align-self: flex-start;
+  margin-left: 40px;
+  border-radius: 12px;
+  padding: 15px 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--borderColor);
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+}
+
+.side-action-btn {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #e0e0e0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.side-action-btn.active {
+  background: var(--buttonBg);
+  color: white;
+}
+
+.side-action-btn:hover {
+  background: var(--buttonHoverBg);
+  color: white;
+}
+
+/* ================= USER DROPDOWN ================= */
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-icon {
+  font-size: 40px;
+  color: var(--headerText);
+}
+
+.dropdown-arrow {
+  font-size: 28px;
+  color: var(--headerText);
+  margin-left: 4px;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: white;
+  min-width: 180px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  overflow: hidden;
+  z-index: 999;
+}
+
+.user-info {
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #212529;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #eee;
+}
+
+.dropdown-logout-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: white;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+  color: #212529;
+}
+
+.dropdown-logout-btn:hover {
+  background: #f5f5f5;
+}
+
+.chart-box {
+  background: var(--cardBg);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--borderColor);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--cardBg);
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+.modal-content h4 {
+  margin-bottom: 20px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid var(--borderColor);
+}
+
+.modal-content .btn-submit {
+  margin-right: 10px;
+}
+
+.modal-content .btn-remove-small {
+  background: #7e1f1f;
+}
+
+
+/* Update your parameterCards and add these shadow variants */
+.parameterCards {
+  background: #ffffff;
+  color: #212529;
+  border-radius: 8px !important;
+  padding: 0;
+  transition: transform 0.2s ease;
+  overflow: hidden;
+}
+
+/* Logic: 0 (x) | 4px (y) | 0 (blur) | 0 (spread) | color
+   The 0 blur creates the "sharp" look from the screenshot.
+*/
+.sharp-shadow-blue { box-shadow: 0 4px 0 0 #1a237e; }
+.sharp-shadow-lightblue { box-shadow: 0 4px 0 0 #3498db; }
+.sharp-shadow-red { box-shadow: 0 4px 0 0 #c0392b; }
+.sharp-shadow-green { box-shadow: 0 4px 0 0 #27ae60; }
+/* Add this to main.css */
+.sharp-shadow-report {
+  box-shadow: 0 4px 0 0 #d4d3d3 !important; /* Matches var(--borderColor) */
+  border-radius: 8px !important;
+}
+
+/* Ensure report-card doesn't have conflicting shadows */
+.report-card {
+  background: var(--cardBg);
+  border: 1px solid var(--borderColor);
+  border-radius: 12px;
+  padding: 25px;
+  /* Removed old soft shadow to use the sharp one */
+  margin-bottom: 25px;
+}
+
+.parameterCards:hover {
+  transform: translateY(-2px);
+}
+
+.parameterCardUpperRowValue {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.parameterCardUpperRowText {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+
+/* =========================================
+   REPORT SECTION CARD
+   ========================================= */
+
+.report-card {
+  background: var(--cardBg);
+  border: 1px solid var(--borderColor);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.report-card-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+  align-items: end;
+}
+
+.report-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.report-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.report-field select,
+.report-field input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--borderColor);
+  background: var(--inputBg);
+  font-size: 14px;
+}
+
+.report-field input:disabled {
+  background: #f1f1f1;
+  cursor: not-allowed;
+}
+
+/* Fade disabled report fields */
+.report-filter-card input:disabled,
+.report-filter-card select:disabled {
+  background-color: #ececec !important;
+  color: #8a8a8a !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Fade the label also when its field is disabled */
+.report-filter-card input:disabled + label,
+.report-filter-card select:disabled + label {
+  color: #b0b0b0;
+}
+
+.report-filter-card input:disabled,
+.report-filter-card select:disabled {
+  background-color: #f2f2f2 !important;
+  border-color: #d6d6d6 !important;
+  color: #a0a0a0 !important;
+  opacity: 0.65;
+}
+
+.report-filter-card input,
+.report-filter-card select {
+  transition: all 0.2s ease;
+}
