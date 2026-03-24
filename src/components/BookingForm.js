@@ -49,22 +49,40 @@ const BookingForm = () => {
     numVisitors: 1
   });
 
-  const handleOpenRefundModal = (ticketNumber) => {
-    const booking = todayBookings.find(b => b.ticketNumber === ticketNumber);
-    if (!booking) return;
+  const handleOpenRefundModal = async (ticketNumber) => {
+    try {
+      // Fetch FRESH data from backend every time modal opens
+      const res = await api.get(`/refunds/ticket/${ticketNumber}`);
+      const freshBooking = res.data;
 
-    const freshItems = booking.items.map(item => ({ ...item }));
+      if (!freshBooking) return;
 
-    setSelectedBooking(booking);
-    setRefundableTypes(freshItems);
+      const mainType = ticketTypes.find(t => t.sortOrder === 1)?.lookupValue;
 
-    setRefundData({
-      ticketNumber,
-      ticketTypes: [],
-      reason: ""
-    });
+      // Only show items that are NOT the main type AND still have quantity > 0
+      const refundableItems = freshBooking.items.filter(
+        item => item.ticketType !== mainType && item.quantity > 0
+      );
 
-    setShowRefundModal(true);
+      setSelectedBooking(freshBooking);
+      setRefundableTypes(refundableItems);
+
+      setRefundData({
+        ticketNumber,
+        ticketTypes: [],
+        reason: ""
+      });
+
+      setShowRefundModal(true);
+
+    } catch (err) {
+      console.error("Failed to fetch ticket details", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Could not load ticket details. Please try again."
+      });
+    }
   };
 
   const isToday = (dateString) => {
@@ -773,36 +791,21 @@ const BookingForm = () => {
                     <div style={{ marginBottom: "15px" }}>
                       <strong>Ticket Types:</strong>
                       {refundableTypes.length > 0 ? (
-                        refundableTypes
-                          .filter(t => {
-                            const mainType = ticketTypes.find(tt => tt.sortOrder === 1)?.lookupValue;
-
-                            return (
-                              t.ticketType !== mainType &&
-                              !alreadyRefunded.includes(t.ticketType)
-                            );
-                          })
-                          .map((t) => (
+                        refundableTypes.map((t) => (
                           <div key={t.ticketType} className="checkbox-row">
                             <input
                               type="checkbox"
                               checked={refundData.ticketTypes.includes(t.ticketType)}
                               onChange={(e) => {
                                 const { checked } = e.target;
-
                                 setRefundData(prev => {
                                   let updatedTypes = [...prev.ticketTypes];
-
                                   if (checked) {
                                     updatedTypes.push(t.ticketType);
                                   } else {
                                     updatedTypes = updatedTypes.filter(type => type !== t.ticketType);
                                   }
-
-                                  return {
-                                    ...prev,
-                                    ticketTypes: updatedTypes
-                                  };
+                                  return { ...prev, ticketTypes: updatedTypes };
                                 });
                               }}
                             />
@@ -812,7 +815,7 @@ const BookingForm = () => {
                           </div>
                         ))
                       ) : (
-                        <span>Loading ticket types...</span>
+                        <span>No refundable ticket types available.</span>
                       )}
                     </div>
 
