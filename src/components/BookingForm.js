@@ -39,6 +39,7 @@ const BookingForm = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [showRefundModal, setShowRefundModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const [formData, setFormData] = useState({
     visitorName: "",
@@ -49,34 +50,21 @@ const BookingForm = () => {
   });
 
   const handleOpenRefundModal = (ticketNumber) => {
-    setTodayBookings(prev => {
-      const booking = prev.find(b => b.ticketNumber === ticketNumber);
-      if (!booking) return prev;
+    const booking = todayBookings.find(b => b.ticketNumber === ticketNumber);
+    if (!booking) return;
 
-      const freshItems = booking.items.map(item => ({
-        ticketType: item.ticketType,
-        quantity: item.quantity,
-        amount: item.amount,
-        slotTime: item.slotTime
-      }));
+    const freshItems = booking.items.map(item => ({ ...item }));
 
-      const refunded = booking.items
-        .filter(item => item.quantity === 0)
-        .map(item => item.ticketType);
+    setSelectedBooking(booking);
+    setRefundableTypes(freshItems);
 
-      setRefundableTypes(freshItems);
-      setAlreadyRefunded(refunded);
-
-      setRefundData({
-        ticketNumber,
-        ticketTypes: [],
-        reason: ""
-      });
-
-      setShowRefundModal(true);
-
-      return prev; // no mutation
+    setRefundData({
+      ticketNumber,
+      ticketTypes: [],
+      reason: ""
     });
+
+    setShowRefundModal(true);
   };
 
   const isToday = (dateString) => {
@@ -463,7 +451,6 @@ const BookingForm = () => {
   const visibleBookings = todayBookings;
 
 
-
   return (
     <div className="page-wrapper">
 
@@ -515,6 +502,7 @@ const BookingForm = () => {
                         type="checkbox"
                         checked={!!selectedEntries[type.lookupValue]}
                         onChange={() => handleCheckboxChange(type.lookupValue)}
+                        disabled={type.sortOrder === 1}
                       />
                       <label>{type.lookupLabel}</label>
                     </div>
@@ -721,6 +709,11 @@ const BookingForm = () => {
                     {visibleBookings.length > 0 ? (
                       visibleBookings.map((bk, idx) => {
                         const isFullyRefunded = bk.items?.every(i => i.quantity === 0);
+                        const mainType = ticketTypes.find(t => t.sortOrder === 1)?.lookupValue;
+
+                        const hasAdditionalTickets = bk.items?.some(
+                          item => item.ticketType !== mainType && item.quantity > 0
+                        );
                         return (
                           <tr key={idx}>
                             <td style={{ padding: "10px", fontWeight: "bold" }}>
@@ -745,6 +738,7 @@ const BookingForm = () => {
                             <td style={{ padding: "10px" }}>
                               {isToday(bk.bookingTime) &&
                                !isFullyRefunded &&
+                               hasAdditionalTickets &&
                                (bk.status === TicketStatus.PAID ||
                                 bk.status === TicketStatus.CREATED ||
                                 bk.status === TicketStatus.PARTIALLY_REFUNDED) ? (
@@ -780,51 +774,36 @@ const BookingForm = () => {
                       <strong>Ticket Types:</strong>
                       {refundableTypes.length > 0 ? (
                         refundableTypes
-                          .filter(t => !alreadyRefunded.includes(t.ticketType))
+                          .filter(t => {
+                            const mainType = ticketTypes.find(tt => tt.sortOrder === 1)?.lookupValue;
+
+                            return (
+                              t.ticketType !== mainType &&
+                              !alreadyRefunded.includes(t.ticketType)
+                            );
+                          })
                           .map((t) => (
                           <div key={t.ticketType} className="checkbox-row">
                             <input
                               type="checkbox"
                               checked={refundData.ticketTypes.includes(t.ticketType)}
                               onChange={(e) => {
-                                const mainType = ticketTypes.find(tt => tt.sortOrder === 1)?.lookupValue;
-                                const isMain = t.ticketType === mainType;
+                                const { checked } = e.target;
 
-                                if (isMain) {
-                                  // MAIN selected → select ALL
-                                  if (e.target.checked) {
-                                    const allTypes = refundableTypes
-                                      .filter(t => t.quantity > 0 && !alreadyRefunded.includes(t.ticketType))
-                                      .map(rt => rt.ticketType);
+                                setRefundData(prev => {
+                                  let updatedTypes = [...prev.ticketTypes];
 
-                                    setRefundData(prev => ({
-                                      ...prev,
-                                      ticketTypes: allTypes
-                                    }));
+                                  if (checked) {
+                                    updatedTypes.push(t.ticketType);
                                   } else {
-                                    // MAIN unchecked → clear ALL
-                                    setRefundData(prev => ({
-                                      ...prev,
-                                      ticketTypes: []
-                                    }));
+                                    updatedTypes = updatedTypes.filter(type => type !== t.ticketType);
                                   }
-                                } else {
-                                  // CHILD selected → ONLY toggle that child
-                                  setRefundData(prev => {
-                                    let updated;
 
-                                    if (e.target.checked) {
-                                      updated = [...prev.ticketTypes, t.ticketType];
-                                    } else {
-                                      updated = prev.ticketTypes.filter(v => v !== t.ticketType);
-                                    }
-
-                                    return {
-                                      ...prev,
-                                      ticketTypes: updated
-                                    };
-                                  });
-                                }
+                                  return {
+                                    ...prev,
+                                    ticketTypes: updatedTypes
+                                  };
+                                });
                               }}
                             />
                             <label>
