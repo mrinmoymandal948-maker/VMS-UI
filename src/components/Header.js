@@ -9,9 +9,6 @@ const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  // isAdminPage is kept here in case you need it for other logic,
-  // though it is no longer used in the JSX below.
-  const isAdminPage = location.pathname.startsWith("/admin");
   const dropdownRef = useRef(null);
   const [refundApprovalRequired, setRefundApprovalRequired] = useState(false);
   const [open, setOpen] = useState(false);
@@ -26,20 +23,14 @@ const Header = () => {
       try {
         const centreId = 1;
         const configData = await getApplicationConfigApi(centreId);
-        const refundConfig = configData.find(
-          c => c.configKey === "REFUND_APPROVAL_REQUIRED"
-        );
-
+        const refundConfig = configData.find(c => c.configKey === "REFUND_APPROVAL_REQUIRED");
         setRefundApprovalRequired(
-          refundConfig
-            ? String(refundConfig.configValue).toLowerCase() === "true"
-            : false
+          refundConfig ? String(refundConfig.configValue).toLowerCase() === "true" : false
         );
       } catch (err) {
         console.error(err);
       }
     };
-
     fetchConfig();
   }, []);
 
@@ -49,63 +40,43 @@ const Header = () => {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (location.pathname === "/login") {
-    return null;
-  }
+  if (location.pathname === "/login") return null;
 
   return (
     <>
       {user && (
         <div className="admin-top-header">
-
           <div className="admin-top-left">
             <h1 className="admin-project-title">Visitor Management System</h1>
           </div>
-
           <div className="admin-top-center">
-            <span className="admin-welcome">
-              Welcome {user.username}
-            </span>
+            <span className="admin-welcome">Welcome {user.username}</span>
           </div>
-
           <div className="admin-top-right">
             <div className="user-dropdown" ref={dropdownRef}>
-              <div
-                className="user-dropdown-toggle"
-                onClick={() => setOpen(!open)}
-              >
+              <div className="user-dropdown-toggle" onClick={() => setOpen(!open)}>
                 <PiUserCircleFill className="user-icon" />
                 <IoMdArrowDropdown className="dropdown-arrow" />
               </div>
-
               {open && (
                 <div className="user-dropdown-menu">
-                  {/* Removed the conditional Admin/Issuer login toggle button and divider */}
-                  <button
-                    className="dropdown-logout-btn"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
+                  <button className="dropdown-logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
               )}
             </div>
           </div>
-
         </div>
       )}
 
       <header className="main-header">
         <div className="header-content">
           <div className="header-middle">
+
+            {/* ADMIN NAV */}
             {user && user.role === "ADMIN" && (
               <nav className="header-nav">
                 <Link
@@ -137,24 +108,18 @@ const Header = () => {
               </nav>
             )}
 
+            {/* ISSUER NAV — single "Tickets" link */}
             {user && user.role !== "ADMIN" && (
               <nav className="header-nav">
                 <Link
-                  to="/booking?tab=create"
-                  className={
-                    !location.search || location.search.includes("create") ? "active" : ""
-                  }
+                  to="/booking"
+                  className={location.pathname.includes("/booking") ? "active" : ""}
                 >
-                  New Ticket
-                </Link>
-                <Link
-                  to="/booking?tab=refund"
-                  className={location.search.includes("refund") ? "active" : ""}
-                >
-                  Refund
+                  Tickets
                 </Link>
               </nav>
             )}
+
           </div>
         </div>
       </header>

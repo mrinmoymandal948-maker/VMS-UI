@@ -65,7 +65,7 @@ const Refund = ({ pendingRefunds, handleDecision }) => {
         <table className="rsc-table" style={{ width: "100%" }}>
           <thead>
             <tr>
-              <th>Ticket #</th>
+              <th>Ticket</th>
               <th>Amount</th>
               <th>Reason</th>
               <th>Actions</th>
@@ -84,13 +84,15 @@ const Refund = ({ pendingRefunds, handleDecision }) => {
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button
                         className="btn-submit"
+                        style={{ flex: 1 }}
                         onClick={() => openModal(req, "APPROVED")}
                       >
                         Accept
                       </button>
 
                       <button
-                        className="btn-remove-small"
+                        className="btn-submit"
+                        style={{ flex: 1 }}
                         onClick={() => openModal(req, "REJECTED")}
                       >
                         Reject
@@ -109,7 +111,7 @@ const Refund = ({ pendingRefunds, handleDecision }) => {
           </tbody>
         </table>
 
-        {/* ✅ Modal */}
+        {/* Modal */}
         <Modal show={showModal} onHide={() => setShowModal(false)} centered>
           <Modal.Header closeButton>
             <Modal.Title>

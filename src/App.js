@@ -4,7 +4,6 @@ import Login from "./components/Login";
 import BookingForm from "./components/BookingForm";
 import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
-import TicketConfirmation from "./components/TicketConfirmation";
 import Header from "./components/Header";
 import AdminPanel from "./components/AdminPanel"; // Import the new component
 import { useAuth } from "./context/AuthContext";
@@ -31,7 +30,6 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/booking" element={<ProtectedRoute><BookingForm /></ProtectedRoute>} />
-          <Route path="/confirmation" element={<ProtectedRoute><TicketConfirmation /></ProtectedRoute>} />
           <Route path="/admin-panel" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
           <Route path="/admin/dashboard" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
           <Route path="/admin/users" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
