@@ -11,7 +11,9 @@ import api, {
   calculatePriceApi,
   getApplicationConfigApi,
   getTodayBookingsApi,
-  confirmPaymentApi
+  confirmPaymentApi,
+  getPaymentByTicketApi,
+  getRefundByTicketApi
 } from "../api";
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -40,6 +42,7 @@ const BookingForm = () => {
   const [showRefundModal, setShowRefundModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [paymentRefundData, setPaymentRefundData] = useState({}); // Maps ticketNumber -> { amountPaid, amountRefunded }
 
   // ─── Modal step: "form" | "confirm" ──────────────────────────────────────
   const [modalStep, setModalStep] = useState("form");
@@ -59,6 +62,33 @@ const BookingForm = () => {
   });
 
   const [selectedEntries, setSelectedEntries] = useState({});
+
+  // ─── Fetch payment and refund data for a ticket ──────────────────────────
+  const fetchPaymentRefundData = async (ticketNumber) => {
+    try {
+      const paymentRes = await getPaymentByTicketApi(ticketNumber);
+      const refundRes = await getRefundByTicketApi(ticketNumber);
+
+      const amountPaid = paymentRes?.amountPaid ?? paymentRes ?? 0;
+      const amountRefunded =
+        refundRes?.totalRefundAmount ??
+        refundRes?.amountRefunded ??
+        refundRes ??
+        0;
+
+      setPaymentRefundData(prev => ({
+        ...prev,
+        [ticketNumber]: { amountPaid, amountRefunded }
+      }));
+    } catch (err) {
+      console.error(`Failed to fetch payment/refund data for ${ticketNumber}`, err);
+
+      setPaymentRefundData(prev => ({
+        ...prev,
+        [ticketNumber]: { amountPaid: 0, amountRefunded: 0 }
+      }));
+    }
+  };
 
   // ─── Refund Modal ────────────────────────────────────────────────────────────
   const handleOpenRefundModal = async (ticketNumber) => {
@@ -193,6 +223,13 @@ const BookingForm = () => {
         const today = new Date().toISOString().split("T")[0];
         const res = await api.get(`/bookings/filter/date?date=${today}&centreId=${centreId}`);
         setTodayBookings(res.data || []);
+
+        // Fetch payment and refund data for all tickets
+        if (res.data && Array.isArray(res.data)) {
+          res.data.forEach(booking => {
+            fetchPaymentRefundData(booking.ticketNumber);
+          });
+        }
       } catch (err) {
         console.error("Failed to load today's bookings", err);
       }
@@ -260,6 +297,8 @@ const BookingForm = () => {
                 };
               })
             );
+            // Refresh payment/refund data
+            fetchPaymentRefundData(ticketToCheck);
           } catch (fetchErr) {
             console.error("Failed to re-fetch ticket after approval", fetchErr);
           }
@@ -321,6 +360,13 @@ const BookingForm = () => {
       }
       const res = await api.get(query);
       setTodayBookings(res.data || []);
+
+      // Fetch payment and refund data for all tickets in the result
+      if (res.data && Array.isArray(res.data)) {
+        res.data.forEach(booking => {
+          fetchPaymentRefundData(booking.ticketNumber);
+        });
+      }
     } catch (err) {
       console.error("Booking fetch failed", err);
       Swal.fire({ icon: "error", title: "Fetch Failed", text: err.response?.data?.message || "Server error." });
@@ -388,6 +434,8 @@ const BookingForm = () => {
             };
           })
         );
+        // Refresh payment/refund data
+        fetchPaymentRefundData(refundData.ticketNumber);
         Swal.fire({ icon: "success", title: "Refund Successful", text: `Refunded Amount: ₹${refundAmount}` });
       }
 
@@ -514,6 +562,9 @@ const BookingForm = () => {
       const today = new Date().toISOString().split("T")[0];
       const res = await api.get(`/bookings/filter/date?date=${today}&centreId=${centreId}`);
       setTodayBookings(res.data || []);
+
+      // Fetch payment data for the new ticket
+      fetchPaymentRefundData(backendTicket.ticketNumber);
     } catch (error) {
       alert("Error saving payment: " + (error.response?.data?.message || "Check connection"));
     }
@@ -660,6 +711,8 @@ const BookingForm = () => {
                   <th style={{ padding: "10px" }}>Ticket No</th>
                   <th style={{ padding: "10px" }}>Time</th>
                   <th style={{ padding: "10px" }}>Details</th>
+                  <th style={{ padding: "10px" }}>Paid</th>
+                  <th style={{ padding: "10px" }}>Refunded</th>
                   <th style={{ padding: "10px" }}>Action</th>
                 </tr>
               </thead>
@@ -669,6 +722,8 @@ const BookingForm = () => {
                   <td style={{ padding: "10px", color: "#aaa", fontStyle: "italic" }}>—</td>
                   <td style={{ padding: "10px", color: "#aaa", fontStyle: "italic" }}>—</td>
                   <td style={{ padding: "10px", color: "#aaa", fontStyle: "italic" }}>New ticket</td>
+                  <td style={{ padding: "10px", color: "#aaa", fontStyle: "italic" }}>—</td>
+                  <td style={{ padding: "10px", color: "#aaa", fontStyle: "italic" }}>—</td>
                   <td style={{ padding: "10px" }}>
                     <button
                       className="btn btn-sm"
@@ -694,6 +749,9 @@ const BookingForm = () => {
                       isToday(bk.bookingTime) &&
                       hasAdditionalTickets &&
                       bk.status !== "FULLY_REFUNDED";
+
+                    const paymentData = paymentRefundData[bk.ticketNumber] || { amountPaid: 0, amountRefunded: 0 };
+
                     return (
                       <tr key={idx}>
                         <td style={{ padding: "10px", fontWeight: "bold" }}>{bk.ticketNumber}</td>
@@ -704,6 +762,12 @@ const BookingForm = () => {
                         </td>
                         <td style={{ padding: "10px" }}>
                           {bk.items?.map(i => i.ticketType).join(", ") || "-"}
+                        </td>
+                        <td style={{ padding: "10px" }}>
+                          ₹{paymentData.amountPaid || 0}
+                        </td>
+                        <td style={{ padding: "10px" }}>
+                          ₹{paymentData.amountRefunded || 0}
                         </td>
                         <td style={{ padding: "10px" }}>
                           {isRefundAllowed ? (
@@ -720,7 +784,7 @@ const BookingForm = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="4" style={{ textAlign: "center", padding: "20px", color: "#aaa" }}>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "20px", color: "#aaa" }}>
                       No tickets found.
                     </td>
                   </tr>

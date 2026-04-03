@@ -79,6 +79,12 @@ export const confirmPaymentApi = async (paymentData) => {
   return res.data;
 };
 
+// ─── NEW: Fetch payment amount for a ticket ──────────────────────────────
+export const getPaymentByTicketApi = async (ticketNumber) => {
+  const res = await api.get(`/payments/ticket/${ticketNumber}`);
+  return res.data;
+};
+
 /* ---------------- REFUND ---------------- */
 
 export const requestRefundApi = async (refundData) => {
@@ -88,6 +94,12 @@ export const requestRefundApi = async (refundData) => {
 
 export const getPendingRefundsApi = async () => {
   const res = await api.get("/refunds/pending");
+  return res.data;
+};
+
+// ─── NEW: Fetch refund amount for a ticket ────────────────────────────────
+export const getRefundByTicketApi = async (ticketNumber) => {
+  const res = await api.get(`/refunds/ticket-amount/${ticketNumber}`);
   return res.data;
 };
 
